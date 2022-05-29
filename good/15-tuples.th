@@ -1,0 +1,21 @@
+# example for point 15 
+
+# it is possible to do list of tuples
+print([[(1,2), (3,4)], [(3,4), (5,6)]]);
+
+<<int, int>> f1(int a){
+    int f2(int b){
+        const int c = 10;
+        return b * c;
+    }
+    int b=a, c=2, d=3, e=4;
+    const <<int, int, <<int, int>> >> f = (b, c, (f2(d), f2(e)));
+    print(f); # a, 2, 30, 40
+    print(a, b, c, d, e); # a, a, 2, 3, 4 
+    tuple (d, e, (b, _)) = f; 
+    print(a, b, c, d, e); # a, 30, 2, a, 2
+    f2(d);
+    print(a, b, c, d, e); # a, 30, 2, a, 2
+    return (b, c);
+}
+print(f1(5)); # 30, 2

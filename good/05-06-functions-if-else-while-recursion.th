@@ -1,0 +1,39 @@
+/*
+example for points 5, 6
+*/
+int fib(int n){
+    if (n == 1 or n == 2){
+        return 1;
+    }
+    int a = 1, b = 1;
+    while (n > 2){
+        int c = a;
+        a = b;
+        b += c;
+        n--;
+    }
+    return b;
+}
+
+int fib3(int n){
+    if (n == 1 or n == 2){
+        return 1;
+    }
+    int a = 1, b = 1;
+    while (n > 2){
+        tuple(a, b) = (b, a+b);
+        n--;
+    }
+    return b;
+}
+
+int fib2(int a, int b, int n){
+    if (n > 2){
+        return fib2(b, a + b, n - 1);
+    }
+    return b;
+}
+
+print(fib(7));
+print(fib2(1, 1, 7));
+print(fib3(7));

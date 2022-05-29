@@ -1,0 +1,41 @@
+Imperative language: Thunder (.th)
+Running interpreter is done in two steps, checking types and interpreting.
+
+Checking types:
+Type checker uses only environment that given name of variable/function gives pair of information.
+Whether the variable is const (functions can't be declared const) and its type.
+Type checker has a few main functions:
+*getExprType that given expression calculates its type 
+*checkStatement that modifies environment accordingly and checks for not correct types
+*checkTypes that given program checks its types 
+*runTypeChecker that given program runs the type checker
+
+Interpreting:
+Interpreter keeps both environment and store.
+Environment given name of variable/function gives its location in the store.
+Store given location gives value in that location.
+Main functions here are:
+*evalExpression that given expression returns its value 
+*evalStmt that given statement gives pair flag and new modified environment, a flag is information if in that *statement there was return, break or continue
+*evalBlock that given block given flag back, no environment because all changes to env in block should be local
+*interpret that given program evaluates it
+*runInterpreter that given program runs interpreter
+
+How to run:
+make && ./interpret <path_to_your_program>
+
+Language description:
+Similar to Latte with a few changes:
+1. comments with # and /* */
+2. tuples
+3. multidimensional arrays
+4. for, similar to Python for 
+5. 'and' instead of && and 'or' instead of ||
+6. program is a list of statements, so no main is needed
+7. all variables have default values (int-> 0, string ->"", bool -> False, list-> list two by two by ..., according to its dimensions and type, tuple -> according to its type)
+8. ifs, elses, fors, whiles have to have brackets, no one liners
+9. there are const variables
+10. new operands like *=, %=, -=, ...
+11. == works with all simple types (int, bool, string, none)
+12. strings can be added
+... and more

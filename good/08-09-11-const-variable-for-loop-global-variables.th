@@ -1,0 +1,38 @@
+# example for points 8 and 9 and 11
+const int A = 10;
+string f = "ss";
+
+string fun(string f){
+    print(f);
+    f = "abcdefgh";
+    print(f);
+    for (const string c : f){
+        print(c);
+    }
+    print("-------------");
+    for (int i : [0,1,2,3,4,5,6,7]){
+        print(f[i]);
+        i = 10;
+    }
+    print("----------------");
+    none f2(int k){
+        for (const int w: [0..k]){
+            print("w*2 =", w*2);
+        }
+    }
+    print(f2(5));
+    return f;
+}
+print("f =", f);
+print(fun("abcd"));
+print("f =", f);
+
+<<bool, <<int, int>> >> returnTuple(int[] f){
+    return (False, (f[0], f[1]));
+}
+print(returnTuple([1,2,3]));
+
+bool[] returnListOfBooleans(bool k){
+    return [k,k,k,k,k,k,k];
+}
+print(returnListOfBooleans(True));

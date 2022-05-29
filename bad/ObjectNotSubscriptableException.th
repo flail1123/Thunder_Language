@@ -1,0 +1,2 @@
+bool a = False;
+print(a[2]);

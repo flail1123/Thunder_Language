@@ -1,0 +1,37 @@
+# example for points 1 to 4
+int a = 5, b = 10;
+a *= 2;
+b -= 3;
+a //= 2;
+b %= 10;
+a += 5;
+print(a, b);
+
+print("a < b", a < b);
+
+print("a <= b", a <= b);
+
+print("a+b > b", a+b > b);
+
+print("a-b >= b", a-b >= b);
+
+print("a * 2 == b // 1", a*2 == b // 1);
+
+print("a != b % 3", a != b % 3);
+
+#bools and strings can also use == and != 
+string a = "hmmm", b = "haha";
+bool b1 = (a==b), b2 = (a[0] == b[0]);
+print(a, b, b1, b2);
+
+# strings can also be added
+print(a+b);
+
+print("b1 == b2", b1 == b2 or 3 < 2);
+
+print("b1 != b2 and not(a[2] != b[2])", b1 != b2 and not(a[2] == b[2]));
+
+b = a;
+print("a == b", a == b);
+b1 = not(b1 and b2);
+print("b1", b1);

@@ -1,0 +1,25 @@
+# example for point 13
+int k = 1;
+print("k = ", k);
+int f1(int k){
+    print("k = ", k);
+    bool f2(bool k){
+        print("k = ", k);
+        string f3(string k){
+            print("k = ", k);
+            int f3(int k){
+                print("k = ", k);
+                return k;
+            }
+            print(f3(8));
+            return k;
+        }
+        print(f3("string"));
+        return k;
+    } 
+    print(f2(True));
+    return k;
+}
+print("k = ", k);
+print(f1(2));
+print("k = ", k);

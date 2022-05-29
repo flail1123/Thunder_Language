@@ -1,0 +1,32 @@
+# example for point 14
+int[][] list = new(int, 4,5);
+print("list =", list);
+list[0][0] = 2;
+print("list =", list);
+print(list[0][1]);
+int[][] list2 = list;
+for (const int x : [0..4]){
+    for (const int y: [0..5]){
+        list[x][y] = x*y;
+    }
+}
+#both lists are changed after fors
+print("list =", list);
+print("list2 =", list2);
+
+none negateValues(bool[][][] bList) {
+    for (bool[][] bListInner: bList){
+        for (bool[] bListInnerInner: bListInner){
+            const int l = len (bListInnerInner);
+            for (const int i: [0..l]){
+                bListInnerInner[i] = not bListInnerInner[i];
+            }
+        }
+    }
+}
+
+bool[][][] l = [[[False, True],[False, True],[False, True]], [[False, True],[False, True],[False, True]]];
+# list is given by pointer
+print("l =", l);
+negateValues(l);
+print("l =", l);
