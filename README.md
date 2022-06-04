@@ -44,7 +44,7 @@ int fib(int n){
 }
 print("fib(3)");
 ```
-arrays are passed by pointers
+arrays are passed by pointers:
 ```
 int[] l = new(int, 10);
 int[] changeArray(int[] l_temp){
