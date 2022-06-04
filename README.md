@@ -84,6 +84,7 @@ Every type has default value:
 Arrays and types have default types depending on of what simple types they are made of.
 
 Arrays are the only types passed by pointer.
+
 Array declaration:
 ```
 Type[]...[] VariableName;
