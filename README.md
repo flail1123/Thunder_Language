@@ -126,13 +126,13 @@ if ( BoolExpression )
 Loop (for):
 ```
 for ( Type VariableName : Expr ) 
-  Block;
+  Block
 ```
 
 Loop (while):
 ```
 while ( BoolExpression ) 
-  Block;
+  Block
 ```
 Function definition:
 ```
