@@ -479,7 +479,7 @@ evalStmt (SAppEmpty pos ident) = evalStmt (SApp pos ident [])
 evalStmt (TupleAss pos (TupleIdents pos2 item items) expr) = do
     env <- ask 
     (TupleV values) <- evalExpression expr 
-    doTupleAss (item:items) values env
+    doTupleAss (item:items) values
 
 evalStmt (Ass pos ident bracketExprs expr) = do 
     indices <- evalExpressions (P.map (\(BracketE _ e) -> e) bracketExprs)
@@ -521,20 +521,20 @@ replace n a (y:ys) =
 getValuesFromTuple:: Value -> [Value]
 getValuesFromTuple (TupleV values) = values
 
-doTupleAss:: [TupleItem] -> [Value] -> EnvI -> InterpreterMonad(Flag, EnvI) 
-doTupleAss (item:items) (value:values) envTuple = do 
+doTupleAss:: [TupleItem] -> [Value] -> InterpreterMonad(Flag, EnvI) 
+doTupleAss (item:items) (value:values) = do 
     env <- ask 
     case item of 
         (TupleItem pos ident) -> do 
             newEnv <- local (const env) (changeIdentValue ident value) 
-            local (const newEnv) (doTupleAss items values env)
-        (TupleItemU _) -> doTupleAss items values envTuple
+            local (const newEnv) (doTupleAss items values)
+        (TupleItemU _) -> doTupleAss items values
         (TupleItemRek _ (TupleIdents _ newItem newItems)) -> do
             
-            (_, newEnv) <- doTupleAss (newItem:newItems) (getValuesFromTuple value) env 
-            local (const newEnv) (doTupleAss items values env)         
+            (_, newEnv) <- doTupleAss (newItem:newItems) (getValuesFromTuple value) 
+            local (const newEnv) (doTupleAss items values)         
 
-doTupleAss [] [] envTuple = do 
+doTupleAss [] [] = do 
     env <- ask 
     return (Empty, env)
 

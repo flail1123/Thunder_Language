@@ -12,6 +12,9 @@ import Control.Monad.Except
 runTypeChecker:: Program -> Either TypeCheckerException ()
 runTypeChecker prog = runIdentity $ runExceptT $ runReaderT (checkTypes prog) M.empty 
 
+resultFunctionValueString = "*resultFunctionValue"
+
+isInsideLoopString = "*isInsideLoop"
 
 declare:: Position -> Bool -> Type  -> Ident-> TypeCheckerMonad(EnvT)
 declare pos b t name = do
@@ -38,8 +41,8 @@ returnCurrentEnvT = do
 
 checkTypes:: Program -> TypeCheckerMonad ()
 checkTypes (Program pos statements) = do 
-    newEnvT <- asks (M.insert (Ident "*resultFunctionValue") (False, NoneT Nothing))
-    newNewEnvT <- local (const newEnvT) (asks (M.insert (Ident "*isInsideLoop") (False, NoneT Nothing)))
+    newEnvT <- asks (M.insert (Ident resultFunctionValueString) (False, NoneT Nothing))
+    newNewEnvT <- local (const newEnvT) (asks (M.insert (Ident isInsideLoopString) (False, NoneT Nothing)))
     local (const newNewEnvT) (checkStatements statements)
 
 checkStatements:: [Stmt] -> TypeCheckerMonad ()
@@ -331,15 +334,15 @@ maybeAddReturnNone stmts pos = do
                 otherwise -> do
                     return (Block pos (stmts ++ [VRet pos]))
 
-isInsideLoop:: String -> Position -> TypeCheckerMonad() 
+isInsideLoop:: Flag -> Position -> TypeCheckerMonad() 
 isInsideLoop s pos = do 
     env <- ask 
-    (isInsideLoop, _) <- getIdentInfo (Ident "*isInsideLoop") pos
+    (isInsideLoop, _) <- getIdentInfo (Ident isInsideLoopString) pos
     case isInsideLoop of 
         False -> do
             case s of 
-                "break" -> throwError $ BreakOutsideLoop pos
-                "continue" -> throwError $ ContinueOutsideLoop pos
+                Break -> throwError $ BreakOutsideLoop pos
+                Continue -> throwError $ ContinueOutsideLoop pos
         True -> do 
             return ()
 
@@ -366,7 +369,7 @@ checkStatement (FnDef pos resultType name args (Block pos2 stmts)) = do
     newEnvT <- declare pos True (FunT pos resultType (P.map (\(Arg p t i)-> t) args)) name
     newNewEnvT <- local (const newEnvT) (declareArgs args)
     block <- maybeAddReturnNone stmts pos2 
-    local (const (M.insert (Ident "*resultFunctionValue") (True, resultType) newNewEnvT)) (checkBlock block)
+    local (const (M.insert (Ident resultFunctionValueString) (True, resultType) newNewEnvT)) (checkBlock block)
     return newEnvT
 
 checkStatement (Skip pos) = do 
@@ -424,7 +427,7 @@ checkStatement (ModIdent pos ident e) = checkStatement (MulIdent pos ident e)
 
 checkStatement (Ret pos expr) = do 
     t2 <- getExprType expr
-    (isInsideFunction, t1) <- getIdentInfo (Ident "*resultFunctionValue") pos
+    (isInsideFunction, t1) <- getIdentInfo (Ident resultFunctionValueString) pos
     case isInsideFunction of 
         False -> throwError $ ReturnOutsideFunction pos 
         True -> do 
@@ -449,7 +452,7 @@ checkStatement (CondElse pos e b1 b2) = do
 checkStatement (While pos e b) = do
     env <- ask 
     isExprBool e 
-    local (M.insert (Ident "*isInsideLoop") (True, (NoneT Nothing))) (checkBlock b)
+    local (M.insert (Ident isInsideLoopString) (True, (NoneT Nothing))) (checkBlock b)
     returnCurrentEnvT
 
 checkStatement (For pos arg e b) = do 
@@ -458,7 +461,7 @@ checkStatement (For pos arg e b) = do
 
     case arg of 
         (Arg p2 t3 ident) -> do
-            newNewEnvT <- local (M.insert (Ident "*isInsideLoop") (True, (NoneT pos))) (declare p2 False t3 ident)
+            newNewEnvT <- local (M.insert (Ident isInsideLoopString) (True, (NoneT pos))) (declare p2 False t3 ident)
             local (const newNewEnvT) (checkBlock b)
             case t of 
                 (ListT p t2) -> do
@@ -469,7 +472,7 @@ checkStatement (For pos arg e b) = do
                     return env
                 otherwise -> throwError $ WrongTypeExceptionList pos t 
         (CArg p2 t3 ident) -> do
-            newNewEnvT <- local (M.insert (Ident "*isInsideLoop") (True, (NoneT pos))) (declare p2 True t3 ident)
+            newNewEnvT <- local (M.insert (Ident isInsideLoopString) (True, (NoneT pos))) (declare p2 True t3 ident)
             local (const newNewEnvT) (checkBlock b)
             case t of 
                 (ListT p t2) -> do
@@ -490,11 +493,11 @@ checkStatement (Ass pos ident bracketExprs expr) = do
             returnCurrentEnvT
 
 checkStatement (BreakStmt pos) = do
-    isInsideLoop "break" pos 
+    isInsideLoop Break pos 
     returnCurrentEnvT
 
 checkStatement (ContinueStmt pos ) = do
-    isInsideLoop "continue" pos
+    isInsideLoop Continue pos
     returnCurrentEnvT
 
 checkStatement (Print pos exprs) = do
