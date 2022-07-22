@@ -61,7 +61,7 @@ More examples of working programs are in folder `good` and of not working progra
 ## Files' description:
 
  * `Types.hs` - all used types
- * `Memory.hs` - pomocnicze funkcje do zarządzania stanem pamięci
+ * `Memory.hs` - utility functions for managment of memory state
  * `TypeChecker.hs` - module responsible for statical typing, run in the first phase before interpreter
  * `Interpreter.hs` - module responsible for actually running the interpreter, run in the second phase after type checker
  * `Main.hs` - main file, runs type checker and interpreter
